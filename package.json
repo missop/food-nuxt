@@ -1,0 +1,14 @@
+{
+  "name": "my-app",
+  "scripts": {
+    "dev": "nuxt"
+  },
+  "dependencies": {
+    "better-scroll": "^1.13.2",
+    "css-loader": "^1.0.1",
+    "nuxt": "^2.2.0",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
+    "vue-style-loader": "^4.1.2"
+  }
+}
