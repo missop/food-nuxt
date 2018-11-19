@@ -71,7 +71,7 @@ seller.minPrice" ref="shopCart"></shopcart>
       this.seller=api.seller;
       this.goods = api.goods;
       
-      console.log(this.seller);
+      // console.log(this.seller);
       
       this.$nextTick(() => {
         this._initScroll();
@@ -93,7 +93,7 @@ seller.minPrice" ref="shopCart"></shopcart>
         }
       },
       _initScroll() {
-        console.log(this.$refs.menuWrapper);
+        // console.log(this.$refs.menuWrapper.children);
         this.menuScroll = new BScroll(this.$refs.menuWrapper, {
           click: true
         });
