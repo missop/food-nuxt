@@ -70,233 +70,307 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import star from '../../components/star/star';
-  import split from '../../components/split/split';
-  import BScroll from 'better-scroll';
-  import {saveToLocal, loadFromLocal} from '../../assets/javascript/store';
+import star from "../../components/star/star";
+import split from "../../components/split/split";
+import BScroll from "better-scroll";
+import { saveToLocal, loadFromLocal } from "../../assets/javascript/store";
+import api from "../../assets/javascript/data";
 
-  export default {
-    props: {
-      seller: {
-        type: Object
-      }
-    },
-    data() {
-      return {
-        favorite: (() => {
-          return loadFromLocal(this.seller.id, 'favorite', false);
-        })()
-      };
-    },
-    computed: {
-      favoriteText() {
-        return this.favorite ? '已收藏' : '收藏';
-      }
-    },
-    created() {
-      this.classMap = ['decrease', 'discount', 'guarantee', 'invoice', 'special'];
-    },
-    watch: {
-      'seller'() {
-        this.$nextTick(() => {
-          this._initScroll();
-          this._initPicScroll();
-        });
-      }
-    },
-    mounted() {
+export default {
+  data() {
+    return {
+      seller: api.seller,
+      favorite: null
+    };
+  },
+  computed: {
+    favoriteText() {
+      return this.favorite ? "已收藏" : "收藏";
+    }
+  },
+  created() {
+    // console.log(this.seller);
+    this.favorite = (()=>{
+      return loadFromLocal(this.seller.id, "favorite", false);
+    })
+    this.classMap = ["decrease", "discount", "guarantee", "invoice", "special"];
+  },
+  watch: {
+    seller() {
       this.$nextTick(() => {
         this._initScroll();
         this._initPicScroll();
       });
-    },
-    methods: {
-      _initScroll() {
-        if (!this.scroll) {
-          this.scroll = new BScroll(this.$refs.seller, {
-            click: true
-          });
-        } else {
-          this.scroll.refresh();
-        }
-      },
-      _initPicScroll() {
-        if (!this.picScroll) {
-          if (this.seller.pics) {
-            let picWith = 120;
-            let margin = 6;
-            let width = (picWith + margin) * this.seller.pics.length - margin;
-            this.$refs.picList.style.width = width + 'px';
-            this.picScroll = new BScroll(this.$refs.picsWrapper, {
-              scrollX: true,
-              eventPassthrough: 'vertical'
-            });
-          }
-        } else {
-          this.picScroll.refresh();
-        }
-      },
-      toggleFavorite() {
-        if (this._constructed) {
-          return;
-        }
-        this.favorite = !this.favorite;
-        saveToLocal(this.seller.id, 'favorite', this.favorite);
+    }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this._initScroll();
+      this._initPicScroll();
+    });
+  },
+  methods: {
+    _initScroll() {
+      if (!this.scroll) {
+        this.scroll = new BScroll(this.$refs.seller, {
+          click: true
+        });
+      } else {
+        this.scroll.refresh();
       }
     },
-    components: {
-      star,
-      split
+    _initPicScroll() {
+      if (!this.picScroll) {
+        if (this.seller.pics) {
+          let picWith = 120;
+          let margin = 6;
+          let width = (picWith + margin) * this.seller.pics.length - margin;
+          this.$refs.picList.style.width = width + "px";
+          this.picScroll = new BScroll(this.$refs.picsWrapper, {
+            scrollX: true,
+            eventPassthrough: "vertical"
+          });
+        }
+      } else {
+        this.picScroll.refresh();
+      }
+    },
+    toggleFavorite() {
+      if (this._constructed) {
+        return;
+      }
+      this.favorite = !this.favorite;
+      saveToLocal(this.seller.id, "favorite", this.favorite);
     }
-  };
+  },
+  components: {
+    star,
+    split
+  }
+};
 </script>
 
 <style lang="stylus" type="text/stylus" rel="stylesheet/stylus">
-  @import "../../assets/stylus/mixin.styl"
-  .seller
-    position: absolute
-    top: 174px
-    bottom: 0
-    left: 0
-    width: 100%
-    overflow: hidden
-    .overview
-      position: relative
-      padding: 18px
-      .title
-        line-height: 14px
-        font-size: 14px
-        color: rgb(7, 17, 27)
-      .desc
-        padding: 8px 0 18px 0
-        border-1px(rgba(7, 17, 27, .1))
-        font-size: 0
-        .star
-          display: inline-block
-          vertical-align: top
-          margin-right: 8px
-        .text
-          display: inline-block
-          vertical-align: top
-          margin: -2px 12px 0 0
-          line-height: 18px
-          font-size: 10px
-          color: rgb(77, 85, 93)
-      .data-box
-        display: flex
-        .data
-          flex: 1
-          margin-top: 18px
-          border-right: 1px solid rgba(7, 17, 27, .1)
-          text-align: center
-          &:last-child
-            border-right: none
-          .text
-            margin-bottom: 4px
-            line-height: 10px
-            font-size: 10px
-            color: rgb(147, 153, 159)
-          .num
-            line-height: 24px
-            font-size: 24px
-            font-weight: normal
-            color: rgb(7, 17, 27)
-            span
-              font-size: 10px
-      .favorite
-        position: absolute
-        top: 18px
-        right: 6px
-        width: 58px
-        text-align: center
-        .icon-favorite
-          display: block
-          line-height: 24px
-          font-size: 24px
-          color: #d4d6d9
-          &.active
-            color: rgb(240, 20, 20)
-        p
-          margin-top: 4px
-          line-height: 10px
-          font-size: 10px
-          color: rgb(77, 85, 93)
-    .activity
-      padding-top: 18px
-      margin: 0 18px
-      .notice
-        .title
-          line-height: 14px
-          font-size: 14px
-          color: rgb(7, 17, 27)
-        .text
-          padding: 8px 12px 16px 12px
-          line-height: 24px
-          font-size: 12px
-          font-weight: 200
-          color: rgb(240, 20, 20)
-      .support
-        border-top: 1px solid rgba(7, 17, 27, .1)
-        padding: 16px 12px
-        font-size: 0
-        .icon
-          display: inline-block
-          vertical-align: top
-          margin-right: 6px
-          width: 16px
-          height: 16px
-          background-size: 16px 16px
-          &.decrease
-            bg-image('decrease_4')
-          &.discount
-            bg-image('discount_4')
-          &.guarantee
-            bg-image('guarantee_4')
-          &.invoice
-            bg-image('invoice_4')
-          &.special
-            bg-image('special_4')
-        span
-          display: inline-block
-          vertical-align: top
-          line-height: 16px
-          font-size: 12px
-          font-weight: 200
-          color: rgb(7, 17, 27)
-    .pics
-      padding: 18px 0 18px 18px
-      .title
-        line-height: 14px
-        font-size: 14px
-        color: rgb(7, 17, 27)
-        margin-bottom: 12px
-      .pics-wrapper
-        width: 100%
-        overflow: hidden
-        white-space: nowrap
-        font-size: 0
-        .pic-list
-          width: 200%
-          .pic-item
-            display: inline-block
-            margin-right: 6px
-            &:last-child
-              margin-right: 0
-    .info
-      padding: 18px 18px 0 18px
-      .title
-        line-height: 14px
-        font-size: 14px
-        color: rgb(7, 17, 27)
-        padding-bottom: 12px
-        border-1px(rgba(7, 17, 27, .1))
-      .info-item
-        padding: 16px 12px
-        line-height: 16px
-        font-size: 12px
-        font-weight: 200
-        color: rgb(7, 17, 27)
-        border-1px(rgba(7, 17, 27, .1))
-        &:last-child
-          border-none()
+@import '../../assets/stylus/mixin.styl';
+
+.seller {
+  position: absolute;
+  top: 174px;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+
+  .overview {
+    position: relative;
+    padding: 18px;
+
+    .title {
+      line-height: 14px;
+      font-size: 14px;
+      color: rgb(7, 17, 27);
+    }
+
+    .desc {
+      padding: 8px 0 18px 0;
+      border-1px(rgba(7, 17, 27, 0.1));
+      font-size: 0;
+
+      .star {
+        display: inline-block;
+        vertical-align: top;
+        margin-right: 8px;
+      }
+
+      .text {
+        display: inline-block;
+        vertical-align: top;
+        margin: -2px 12px 0 0;
+        line-height: 18px;
+        font-size: 10px;
+        color: rgb(77, 85, 93);
+      }
+    }
+
+    .data-box {
+      display: flex;
+
+      .data {
+        flex: 1;
+        margin-top: 18px;
+        border-right: 1px solid rgba(7, 17, 27, 0.1);
+        text-align: center;
+
+        &:last-child {
+          border-right: none;
+        }
+
+        .text {
+          margin-bottom: 4px;
+          line-height: 10px;
+          font-size: 10px;
+          color: rgb(147, 153, 159);
+        }
+
+        .num {
+          line-height: 24px;
+          font-size: 24px;
+          font-weight: normal;
+          color: rgb(7, 17, 27);
+
+          span {
+            font-size: 10px;
+          }
+        }
+      }
+    }
+
+    .favorite {
+      position: absolute;
+      top: 18px;
+      right: 6px;
+      width: 58px;
+      text-align: center;
+
+      .icon-favorite {
+        display: block;
+        line-height: 24px;
+        font-size: 24px;
+        color: #d4d6d9;
+
+        &.active {
+          color: rgb(240, 20, 20);
+        }
+      }
+
+      p {
+        margin-top: 4px;
+        line-height: 10px;
+        font-size: 10px;
+        color: rgb(77, 85, 93);
+      }
+    }
+  }
+
+  .activity {
+    padding-top: 18px;
+    margin: 0 18px;
+
+    .notice {
+      .title {
+        line-height: 14px;
+        font-size: 14px;
+        color: rgb(7, 17, 27);
+      }
+
+      .text {
+        padding: 8px 12px 16px 12px;
+        line-height: 24px;
+        font-size: 12px;
+        font-weight: 200;
+        color: rgb(240, 20, 20);
+      }
+    }
+
+    .support {
+      border-top: 1px solid rgba(7, 17, 27, 0.1);
+      padding: 16px 12px;
+      font-size: 0;
+
+      .icon {
+        display: inline-block;
+        vertical-align: top;
+        margin-right: 6px;
+        width: 16px;
+        height: 16px;
+        background-size: 16px 16px;
+
+        &.decrease {
+          bg-image('decrease_4');
+        }
+
+        &.discount {
+          bg-image('discount_4');
+        }
+
+        &.guarantee {
+          bg-image('guarantee_4');
+        }
+
+        &.invoice {
+          bg-image('invoice_4');
+        }
+
+        &.special {
+          bg-image('special_4');
+        }
+      }
+
+      span {
+        display: inline-block;
+        vertical-align: top;
+        line-height: 16px;
+        font-size: 12px;
+        font-weight: 200;
+        color: rgb(7, 17, 27);
+      }
+    }
+  }
+
+  .pics {
+    padding: 18px 0 18px 18px;
+
+    .title {
+      line-height: 14px;
+      font-size: 14px;
+      color: rgb(7, 17, 27);
+      margin-bottom: 12px;
+    }
+
+    .pics-wrapper {
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      font-size: 0;
+
+      .pic-list {
+        width: 200%;
+
+        .pic-item {
+          display: inline-block;
+          margin-right: 6px;
+
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+      }
+    }
+  }
+
+  .info {
+    padding: 18px 18px 0 18px;
+
+    .title {
+      line-height: 14px;
+      font-size: 14px;
+      color: rgb(7, 17, 27);
+      padding-bottom: 12px;
+      border-1px(rgba(7, 17, 27, 0.1));
+    }
+
+    .info-item {
+      padding: 16px 12px;
+      line-height: 16px;
+      font-size: 12px;
+      font-weight: 200;
+      color: rgb(7, 17, 27);
+      border-1px(rgba(7, 17, 27, 0.1));
+
+      &:last-child {
+        border-none();
+      }
+    }
+  }
+}
 </style>

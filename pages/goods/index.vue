@@ -97,6 +97,8 @@ seller.minPrice" ref="shopCart"></shopcart>
         this.menuScroll = new BScroll(this.$refs.menuWrapper, {
           click: true
         });
+        console.log(this.menuScroll);
+        
 //        使菜单栏可以滚动
         this.menuScroll.hasVerticalScroll = true;
         this.menuScroll.maxScrollY = -54.4;

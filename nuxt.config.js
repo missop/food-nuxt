@@ -37,14 +37,14 @@ module.exports = {
           name: 'img/[name].[hash:7].[ext]'
         }
       },
-      {
+     /*  {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
         loader: 'url-loader',
         options: {
           limit: 10000,
           name: 'fonts/[name].[hash:7].[ext]'
         }
-      },
+      }, */
       {
         test: /\.styl/,
         loader: "vue-style-loader!css-loader!stylus-loader"
